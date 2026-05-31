@@ -1,0 +1,19 @@
+syntax = "proto3";
+package fortress.scanner.v1;
+option go_package = "github.com/fortress-ws/fortress-ws/pkg/proto/gen;scannerv1";
+
+service ScannerService {
+  rpc ScanFrame (ScanRequest) returns (ScanResponse);
+}
+
+message ScanRequest {
+  bytes  payload    = 1;
+  uint32 opcode     = 2;
+  bool   is_masked  = 3;
+}
+
+message ScanResponse {
+  bool   is_threat  = 1;
+  string threat_type = 2;
+  float  confidence = 3;
+}

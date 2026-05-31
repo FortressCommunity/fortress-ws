@@ -1,0 +1,19 @@
+[package]
+name = "fortress-ws-scanner"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tonic = "0.11"
+prost = "0.12"
+tokio = { version = "1", features = ["full"] }
+regex = "1.10"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+[build-dependencies]
+tonic-build = "0.11"
+prost-build = "0.12"

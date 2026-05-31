@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  scanner:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.rust
+    ports:
+      - "50051:50051"
+    environment:
+      - SCANNER_GRPC_ADDR=0.0.0.0:50051
+      - RUST_LOG=info
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'scan' | grpc_health_probe || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    depends_on:
+      - redis
+
+  gateway:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.golang
+    ports:
+      - "8443:8443"
+    environment:
+      - FORTRESS_JWT_SECRET=${FORTRESS_JWT_SECRET:-super-secret-key-at-least-32-bytes-long!!}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - SCANNER_GRPC_ADDR=scanner:50051
+    depends_on:
+      redis:
+        condition: service_healthy
+      scanner:
+        condition: service_started

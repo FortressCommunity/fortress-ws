@@ -1,0 +1,4 @@
+bin/
+rust/target/
+pkg/proto/gen/
+*.zip

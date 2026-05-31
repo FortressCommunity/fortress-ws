@@ -1,0 +1,29 @@
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Run gosec
+        run: |
+          curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s v2.19.0
+          ./bin/gosec -severity medium ./...
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Cargo audit
+        working-directory: rust
+        run: |
+          cargo install cargo-audit
+          cargo audit

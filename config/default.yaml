@@ -1,0 +1,33 @@
+gateway:
+  addr: ":8443"
+  max_connections: 10000
+  idle_timeout: "5m"
+  allowed_origins:
+    - "https://example.com"
+
+auth:
+  jwt_secret_env: "FORTRESS_JWT_SECRET"
+  token_ttl: "1h"
+  issuer: "fortress-ws"
+
+rate_limit:
+  requests_per_minute: 60
+  burst: 10
+
+redis:
+  addr: "localhost:6379"
+  password_env: "REDIS_PASSWORD"
+  db: 0
+
+scanner:
+  grpc_addr: "localhost:50051"
+  timeout: "5s"
+
+tls:
+  cert_file: ""
+  key_file: ""
+  enforce: true
+
+logging:
+  level: "info"
+  format: "json"
